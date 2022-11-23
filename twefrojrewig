@@ -1,0 +1,73 @@
+-- Decompiled with the Synapse X Luau decompiler.
+
+return {
+	getDistance = function(p1, p2)
+		return (p1.PrimaryPart.Position - p2.PrimaryPart.Position).Magnitude;
+	end, 
+	getClosestEnemy = function(p3)
+		local v1 = nil;
+		local v2 = math.huge;
+		for v3, v4 in pairs(workspace:WaitForChild("players"):GetChildren()) do
+			if v4 ~= p3 and v4.PrimaryPart then
+				local l__Magnitude__5 = (v4.PrimaryPart.Position - p3.PrimaryPart.Position).Magnitude;
+				if l__Magnitude__5 < v2 then
+					v2 = l__Magnitude__5;
+					v1 = v4;
+				end;
+			end;
+		end;
+		return v1;
+	end, 
+	getClosestPart = function(p4, p5)
+		local v6 = nil;
+		local v7 = math.huge;
+		for v8, v9 in pairs(p5:GetChildren()) do
+			if v9:IsA("BasePart") then
+				local v10 = Vector3.new(0, 0, 0);
+				if v9.Name == "HumanoidRootPart" then
+					v10 = p5.PrimaryPart.CFrame.lookVector * 3;
+				end;
+				local l__Magnitude__11 = (p4 - (v9.Position + v10)).Magnitude;
+				if l__Magnitude__11 < v7 then
+					v7 = l__Magnitude__11;
+					v6 = v9;
+				end;
+			end;
+		end;
+		return v6;
+	end, 
+	getRetreatDirection = function(p6, p7, p8)
+		local v12 = p6.PrimaryPart.Position - p7.PrimaryPart.Position;
+		local v13 = RaycastParams.new();
+		v13.FilterType = Enum.RaycastFilterType.Blacklist;
+		v13.FilterDescendantsInstances = { workspace:WaitForChild("players") };
+		local v14 = -135;
+		local v15 = 0;
+		local v16 = nil;
+		for v17 = 1, 10 do
+			local v18 = workspace:Raycast(p6.PrimaryPart.Position, (CFrame.lookAt(p6.PrimaryPart.Position, p6.PrimaryPart.Position + v12) * CFrame.Angles(0, math.rad(v14), 0)).LookVector * p8, v13);
+			if v18 then
+				local l__Magnitude__19 = (v18.Position - p7.PrimaryPart.Position).Magnitude;
+				if v15 < l__Magnitude__19 then
+					v16 = v18.Position;
+					v15 = l__Magnitude__19;
+				end;
+			end;
+			v14 = v14 + 27;
+		end;
+		return v16;
+	end, 
+	sideCast = function(p9)
+		local v20 = RaycastParams.new();
+		v20.FilterType = Enum.RaycastFilterType.Blacklist;
+		v20.FilterDescendantsInstances = { workspace:WaitForChild("players") };
+		local v21 = 0;
+		for v22 = 1, 10 do
+			local v23 = workspace:Raycast(p9.PrimaryPart.Position, (p9.PrimaryPart.CFrame * CFrame.Angles(0, math.rad(v21), 0)).lookVector * 8, v20);
+			v21 = v21 + 36;
+			if v23 then
+				return v23;
+			end;
+		end;
+	end
+};
